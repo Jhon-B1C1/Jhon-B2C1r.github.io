@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuarios - Mr.Driver</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #ffd105;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        h2 {
+            margin-top: 20px;
+        }
+
+        .eliminar-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .eliminar-btn:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Usuarios Registrados</h2>
+
+    <table id="tabla-usuarios">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Aquí se mostrarán los usuarios -->
+        </tbody>
+    </table>
+
+    <script>
+        // Obtener los usuarios guardados en localStorage
+        const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+        // Referencia a la tabla
+        const tablaUsuarios = document.getElementById('tabla-usuarios').getElementsByTagName('tbody')[0];
+
+        // Función para eliminar un usuario
+        function eliminarUsuario(index) {
+            if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+                usuarios.splice(index, 1); // Elimina el usuario del arreglo
+                localStorage.setItem('usuarios', JSON.stringify(usuarios)); // Actualiza el localStorage
+                window.location.reload(); // Recarga la página para reflejar los cambios
+            }
+        }
+
+        // Recorrer los usuarios y agregarlos a la tabla
+        usuarios.forEach((usuario, index) => {
+            const fila = tablaUsuarios.insertRow();
+            const celdaNombre = fila.insertCell(0);
+            const celdaEmail = fila.insertCell(1);
+            const celdaAcciones = fila.insertCell(2);
+
+            celdaNombre.textContent = usuario.nombre;
+            celdaEmail.textContent = usuario.email;
+
+            // Crear botón de eliminar
+            const eliminarBtn = document.createElement('button');
+            eliminarBtn.textContent = 'Eliminar';
+            eliminarBtn.className = 'eliminar-btn';
+            eliminarBtn.onclick = () => eliminarUsuario(index); // Llamar a la función de eliminar
+            celdaAcciones.appendChild(eliminarBtn);
+        });
+    </script>
+
+</body>
+</html>

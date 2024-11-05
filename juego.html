@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Enseñanza Vial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 80px;
+            padding: 20px;
+        }
+
+        #iniciodejuego, #puntaje, #contenido, #opciones-container, #resultado, #seleccionar-nivel {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+            width: 80%;
+            margin-left:10% ;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+        }
+
+        button {
+            display: block;
+            width: 60%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #ffd105;
+            color: white;
+            border: none;
+            align-items: center;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-left: 20%;
+        }
+
+        button:hover {
+            background-color: #ffd105;
+        }
+
+        #video-container, #resultadoVideoContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 640px;
+            height: 360px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            margin: 0 auto;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #opciones-container img {
+            display: block;
+            max-width: 640px;
+            height: 360px;
+            object-fit: cover;
+            margin: 20px auto;
+        }
+
+        #resultado-texto {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #contenido-texto {
+            text-align: center;
+        }
+
+        /* Botón de saltar video */
+        #skip-btn {
+            margin-top: 10px;
+            background-color: #ffd105;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            cursor: pointer;
+            display: none; /* Oculto inicialmente */
+        }
+    </style>
+</head>
+<body>
+
+    <img src="R.png" alt="Logo" class="logo">
+
+    <div id="iniciodejuego" style="display: block;">
+        <h1>Bienvenido a nuestro juego dinámico de enseñanza vial</h1>
+        <h1>Refuerza tu habilidad al volante y tus conocimientos</h1>
+        <h1>En algún momento, podrían salvarte</h1>
+        <p>El objetivo de este juego es enseñarte las mejores prácticas de seguridad vial y asegurarte de que estés preparado para situaciones reales al volante. ¡Comencemos!</p>
+        <button onclick="mostrarSeleccionNivel()">Iniciar con tu lección</button>
+    </div>
+
+    <!-- Selección de nivel -->
+    <div id="seleccionar-nivel" style="display: none;">
+        <h2>Selecciona un nivel para comenzar:</h2>
+        <button onclick="seleccionarNivel(1)">Nivel 1</button>
+        <button onclick="seleccionarNivel(2)">Nivel 2</button>
+        <button onclick="seleccionarNivel(3)">Nivel 3</button>
+    </div>
+
+    <!-- Contenido principal de la lección -->
+    <div id="contenido" style="display: none;">
+        <p id="contenido-texto">Mire atentamente el video</p>
+        <div id="video-container">
+            <video id="miVideo" width="640" height="360" autoplay onended="mostrarOpciones()">
+                <source id="videoSource" src="" type="video/mp4">
+                Tu navegador no soporta el tag de video.
+            </video>
+        </div>
+        <button id="skip-btn" onclick="saltarVideo()">Saltar Video</button>
+    </div>
+
+    <div id="opciones-container" style="display: none;">
+        <h2 id="selecciona-opcion-titulo"></h2>
+        <img id="auto" src="auto parqueado.png" alt="Auto">
+        <form id="opcionesForm"></form>
+    </div>
+
+    <div id="resultado" style="display: none;">
+        <p id="resultado-texto"></p>
+        <div id="resultadoVideoContainer">
+            <video id="resultadoVideo" width="640" height="360" autoplay onended="mostrarBotonesFinales()">
+                <source id="resultadoSource" type="video/mp4">
+                Tu navegador no soporta el tag de video.
+            </video>
+        </div>
+        <p id="texto-adicional"></p>
+        <button id="continuar-btn" style="display: none;" onclick="continuarLeccion()">Continuar con la siguiente lección</button>
+        <button id="regresar-btn" style="display: none;" onclick="volverAlMenu()">Regresar al menú</button>
+    </div>
+
+    <div id="puntaje" style="display: none;">
+        <h2>Puntaje Final</h2>
+        <p>Tu puntaje es: <span id="puntaje-total"></span></p>
+        <p id="retroalimentacion"></p>
+    </div>
+
+    <script>
+        let nivel = 1;
+        let leccionActual = 1;
+        let respuestasCorrectas = 0;
+        let respuestasIncorrectas = [];
+
+        function mostrarSeleccionNivel() {
+            document.getElementById('iniciodejuego').style.display = 'none';
+            document.getElementById('seleccionar-nivel').style.display = 'block';
+        }
+
+        function seleccionarNivel(nivelSeleccionado) {
+            nivel = nivelSeleccionado;
+            leccionActual = 1;
+            document.getElementById('seleccionar-nivel').style.display = 'none';
+            cargarSiguienteLeccion();
+        }
+
+        function cargarSiguienteLeccion() {
+
+            document.getElementById("resultado").style.display = "none";
+            document.getElementById("continuar-btn").style.display = "none";
+            document.getElementById("regresar-btn").style.display = "none";
+
+            const video = document.getElementById("miVideo");
+            const videoSource = document.getElementById("videoSource");
+
+            // Lecciones del nivel 1 y nivel 2
+            if (nivel === 1) {
+                if (leccionActual === 1) {
+                    videoSource.src = "clip1-1.mp4";
+                } else if (leccionActual === 2) {
+                    videoSource.src = "clip2-1.mp4";
+                } else if (leccionActual === 3) {
+                    videoSource.src = "clip3-1.mp4";
+                }
+            } else if (nivel === 2) {
+                if (leccionActual === 1) {
+                    videoSource.src = "clip1-1.mp4";  // Repite lección 1
+                } else if (leccionActual === 2) {
+                    videoSource.src = "clip2-1.mp4";  // Repite lección 2
+                } else if (leccionActual === 3) {
+                    videoSource.src = "clip3-1.mp4";  // Repite lección 3
+                } else if (leccionActual === 4) {
+                    videoSource.src = "clip4-1.mp4";  // Nueva lección 4
+                } else if (leccionActual === 5) {
+                    videoSource.src = "clip5-1.mp4";  // Nueva lección 5
+                }
+            } else if (nivel === 3) {
+                 if (leccionActual === 1) {
+                    videoSource.src = "clip1-1.mp4";
+                } else if (leccionActual === 2) {
+                    videoSource.src = "clip2-1.mp4";
+                } else if (leccionActual === 3) {
+                     videoSource.src = "clip3-1.mp4";
+                } else if (leccionActual === 4) {
+                     videoSource.src = "clip4-1.mp4";
+                } else if (leccionActual === 5) {
+                    videoSource.src = "clip5-1.mp4";
+                } else if (leccionActual === 6) {
+                    videoSource.src = "clip6-1.mp4";
+                } else if (leccionActual === 7) {
+                    videoSource.src = "clip7-1.mp4";
+                }
+            }
+            video.load();
+            document.getElementById("contenido").style.display = "block";
+            document.getElementById("skip-btn").style.display = "inline-block"; // Muestra el botón de saltar
+        }
+    
+
+        function mostrarOpciones() {
+            const videoActual = document.getElementById("miVideo").currentSrc;
+
+            document.getElementById("contenido").style.display = "none";
+            document.getElementById("opciones-container").style.display = "block";
+
+            if (nivel === 1) {
+                if (videoActual.includes("clip1-1.mp4")) {
+                    mostrarOpcionesLeccion1();
+                } else if (videoActual.includes("clip2-1.mp4")) {
+                    mostrarOpcionesLeccion2();
+                } else if (videoActual.includes("clip3-1.mp4")) {
+                    mostrarOpcionesLeccion3();
+                }
+            } else if (nivel === 2) {
+                if (videoActual.includes("clip4-1.mp4")) {
+                    mostrarOpcionesLeccion4();
+                } else if (videoActual.includes("clip5-1.mp4")) {
+                    mostrarOpcionesLeccion5();
+                } else {
+                    // Reutilizamos las lecciones 1, 2, y 3 del nivel 1
+                    if (videoActual.includes("clip1-1.mp4")) {
+                        mostrarOpcionesLeccion1();
+                    } else if (videoActual.includes("clip2-1.mp4")) {
+                        mostrarOpcionesLeccion2();
+                    } else if (videoActual.includes("clip3-1.mp4")) {
+                        mostrarOpcionesLeccion3();
+                    }
+                }
+            } else if (nivel === 3){
+                if (videoActual.includes("clip1-1.mp4")) {
+                    mostrarOpcionesLeccion1();
+                } else if (videoActual.includes("clip2-1.mp4")) {
+                    mostrarOpcionesLeccion2();
+                } else if (videoActual.includes("clip3-1.mp4")) {
+                    mostrarOpcionesLeccion3();
+                } else if (videoActual.includes("clip4-1.mp4")) {
+                    mostrarOpcionesLeccion4();
+                } else if (videoActual.includes("clip5-1.mp4")) {
+                    mostrarOpcionesLeccion5();
+                } else if (videoActual.includes("clip6-1.mp4")) {
+                    mostrarOpcionesLeccion6();
+                } else if (videoActual.includes("clip7-1.mp4")) {
+                    mostrarOpcionesLeccion7();
+                }
+             }        
+        }
+
+        // Funciones para mostrar las opciones de cada lección
+        function mostrarOpcionesLeccion1() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Qué debes hacer antes de arrancar el auto?";
+            document.getElementById("opcionesForm").innerHTML = `
+                <label><input type="radio" name="opcion" value="opcion1"> Ajustar el asiento y los espejos</label><br>
+                <label><input type="radio" name="opcion" value="opcion2"> Tocar la bocina</label><br>
+                <label><input type="radio" name="opcion" value="opcion3"> Acelerar</label><br>
+                <button type="button" onclick="mostrarResultado('opcion1', 'clip1-correcto.mp4', 'clip1-incorrecto.mp4')">Enviar</button>
+            `;
+        }
+
+        function mostrarOpcionesLeccion2() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Cuál es la distancia adecuada para mantener al detenerte detrás de otro vehículo?";
+            document.getElementById("opcionesForm").innerHTML = `
+                <label><input type="radio" name="opcion" value="opcion1"> 1 metro</label><br>
+                <label><input type="radio" name="opcion" value="opcion2"> 5 segundos</label><br>
+                <label><input type="radio" name="opcion" value="opcion3"> 2 metros</label><br>
+                <button type="button" onclick="mostrarResultado('opcion3', 'clip2-correcto.mp4', 'clip2-incorrecto.mp4')">Enviar</button>
+            `;
+        }
+
+        function mostrarOpcionesLeccion3() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Cuál es el procedimiento adecuado para estacionar en paralelo?";
+            document.getElementById("opcionesForm").innerHTML = `
+            <label><input type="radio" name="opcion" value="opcion1"> Ingresar rápidamente y ajustar después</label><br>
+            <label><input type="radio" name="opcion" value="opcion2"> Maniobrar con calma, retroceder lentamente y girar el volante hacia el borde de la acera</label><br>
+            <label><input type="radio" name="opcion" value="opcion3"> Estacionar a una distancia considerable de la acera</label><br>
+            <button type="button" onclick="mostrarResultado('opcion2', 'clip3-correcto.mp4', 'clip3-incorrecto.mp4')">Enviar</button>
+            `;
+        }
+
+        function mostrarOpcionesLeccion4() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Qué debes hacer antes de cambiar de carril?";
+            document.getElementById("opcionesForm").innerHTML = `
+            <label><input type="radio" name="opcion" value="opcion1"> Girar inmediatamente sin mirar los espejos</label><br>
+            <label><input type="radio" name="opcion" value="opcion2"> Acelerar rápidamente para evitar que otros vehículos te alcancen</label><br>
+            <label><input type="radio" name="opcion" value="opcion3"> Señalizar con tiempo, verificar los espejos y revisar los puntos ciegos</label><br>
+            <button type="button" onclick="mostrarResultado('opcion3', 'clip4-correcto.mp4', 'clip4-incorrecto.mp4')">Enviar</button>
+            `;
+        }
+        function mostrarOpcionesLeccion5() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Qué debes hacer si hay peatones cruzando la vía?";
+            document.getElementById("opcionesForm").innerHTML = `
+            <label><input type="radio" name="opcion" value="opcion1"> Acelerar para cruzar antes que ellos</label><br>
+            <label><input type="radio" name="opcion" value="opcion2"> Tocar la bocina para que se apuren</label><br>
+            <label><input type="radio" name="opcion" value="opcion3"> Detenerse completamente y darles prioridad</label><br>
+            <button type="button" onclick="mostrarResultado('opcion3', 'clip5-correcto.mp4', 'clip5-incorrecto.mp4')">Enviar</button>`;
+         }
+        function mostrarOpcionesLeccion6() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Qué deberías hacer al ver una moto adelante a baja velocidad en una carretera de doble sentido?";
+            document.getElementById("opcionesForm").innerHTML = `
+            <label><input type="radio" name="opcion" value="opcion1"> Acelerar y adelantar inmediatamente en una curva cerrada.</label><br>
+            <label><input type="radio" name="opcion" value="opcion2"> Mantener la velocidad y esperar un tramo recto y seguro para adelantar.</label><br>
+            <label><input type="radio" name="opcion" value="opcion3"> Frenar bruscamente y tocar la bocina repetidamente para que se mueva.</label><br>
+            <button type="button" onclick="mostrarResultado('opcion2', 'clip6-correcto.mp4', 'clip6-incorrecto.mp4')">Enviar</button>`;
+         }
+        function mostrarOpcionesLeccion7() {
+            document.getElementById("selecciona-opcion-titulo").innerText = "¿Qué precauciones debes tomar al conducir en una intersección sin semáforos?";
+            document.getElementById("opcionesForm").innerHTML = `
+            <label><input type="radio" name="opcion" value="opcion1"> Disminuir la velocidad y verificar en todas las direcciones antes de avanzar.</label><br>
+            <label><input type="radio" name="opcion" value="opcion2"> Acelerar para pasar rápidamente.</label><br>
+            <label><input type="radio" name="opcion" value="opcion3"> Tocar la bocina para que otros conductores te den paso.</label><br>
+            <button type="button" onclick="mostrarResultado('opcion1', 'clip7-correcto.mp4', 'clip7-incorrecto.mp4')">Enviar</button>`;
+         }
+
+
+        // Mostrar resultado de la opción seleccionada con video específico por lección
+        function mostrarResultado(opcionCorrecta, videoCorrecto, videoIncorrecto) {
+            let seleccionada = document.querySelector('input[name="opcion"]:checked').value;
+            document.getElementById("opciones-container").style.display = "none";
+            document.getElementById("resultado").style.display = "block";
+
+            if (seleccionada === opcionCorrecta) {
+                respuestasCorrectas++;
+                document.getElementById("resultado-texto").innerText = "¡Correcto!";
+                document.getElementById("resultadoSource").src = videoCorrecto;
+            } else {
+                respuestasIncorrectas.push(leccionActual);
+                document.getElementById("resultado-texto").innerText = "Incorrecto.";
+                document.getElementById("resultadoSource").src = videoIncorrecto;
+            }
+            document.getElementById("resultadoVideo").load();
+        }
+
+       function mostrarBotonesFinales() {
+        document.getElementById("continuar-btn").style.display = "inline-block";
+        document.getElementById("regresar-btn").style.display = "inline-block";
+        if ((nivel === 1 && leccionActual > 3) || (nivel === 2 && leccionActual > 5) ||  (nivel === 3 && leccionActual > 7)) {
+            mostrarRetroalimentacionFinal();
+        }
+        }   
+
+        function mostrarRetroalimentacionFinal() {
+            document.getElementById("puntaje").style.display = "block";
+            document.getElementById("puntaje-total").innerText = respuestasCorrectas + "/" + (respuestasCorrectas + respuestasIncorrectas.length);
+
+            if (respuestasIncorrectas.length === 0) {
+                document.getElementById("retroalimentacion").innerText = "¡Excelente! Has respondido todo correctamente.";
+            } else {
+                document.getElementById("retroalimentacion").innerText = "Revise las lecciones de las siguientes preguntas incorrectas: Pregunta " + respuestasIncorrectas.join(", ");
+            }
+        }
+        function continuarLeccion() {
+            leccionActual++;
+            document.getElementById("continuar-btn").style.display = "none"; // Oculta el botón nuevamente
+            document.getElementById("regresar-btn").style.display = "none";  // Oculta el botón nuevamente
+            
+            // Si el jugador ha completado todas las lecciones del nivel
+            if ((nivel === 1 && leccionActual > 3) || (nivel === 2 && leccionActual > 5) ||  (nivel === 3 && leccionActual > 7)) {
+             mostrarRetroalimentacionFinal(); // Llama a la función para mostrar retroalimentación final
+            } else {
+             cargarSiguienteLeccion();
+             }
+    }
+        function volverAlMenu() {
+            document.getElementById("resultado").style.display = "none";
+            document.getElementById("seleccionar-nivel").style.display = "block";
+        }
+
+        function saltarVideo() {
+         const video = document.getElementById("miVideo");
+            video.pause(); // Detiene el video
+            mostrarOpciones(); // Muestra las opciones de respuesta
+        }   
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Principal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+
+        header {
+            width: 98%;
+            margin: 1px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header.scrolled {
+            background-color: rgba(51, 51, 51, 0.8);
+        }
+
+        .logo {
+            border-radius: 15%;
+            width: 80px;
+            height: auto;
+        }
+
+        h2 {
+            margin: 0px;
+            font-size: 32px;
+            color: #ffd105;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #ffd105;
+            padding: 10px 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #ffd105;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .user-icon {
+            width: 40px;
+            height: auto;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            border-radius: 5px; /* Mejora estética */
+            margin-top: 5px; /* Espacio entre el icono y el menú */
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown a:hover {
+            background-color: #ffd105;
+            color: #fff;
+        }
+
+        .carousel {
+            width: 100%;
+            max-width: 1200px;
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+            max-height: 500px;
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 1s ease-in-out;
+            width: 100%;
+        }
+
+        .carousel-images img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        section {
+            margin: 40px 0;
+            width: 100%;
+            max-width: 1200px;
+            text-align: left;
+            padding: 20px;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: transparent;
+            color: #ffd105;
+            border: 2px solid #ffd105;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.5s ease-out;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #ffd105;
+            color: white;
+        }
+
+        #juego-cuadro {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px auto;
+            flex-wrap: wrap;
+            max-width: 1200px;
+        }
+
+        .cuadro {
+            width: 300px;
+            margin: 20px;
+            height: 300px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
+            text-align: center;
+            box-sizing: border-box;
+            transition: transform 0.3s ease-in-out; /* Efecto al pasar el mouse */
+        }
+        .cuadro:hover {
+            transform: scale(1.05); /* Aumenta el tamaño al hacer hover */
+        }
+
+        .imagen-juego {
+            width: 80%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .boton-juego {
+            padding: 10px 20px;
+            background-color: #ffd105;
+            color: rgb(0, 0, 0);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .boton-juego:hover {
+            background-color: #444;
+        }
+        #leyes\.importantes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #leyes\.importantes img {
+            width: 50%;
+            object-fit: cover;
+        }
+
+        #leyes\.importantes div {
+            width: 50%;
+            padding: 20px;
+        }
+
+        #leyes\.importantes h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        #leyes\.importantes ol {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        #leyes\.importantes ol li {
+            margin-bottom: 15px;
+        }
+        #licencias {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .cuadrolicensia {
+            background-color: #f5f5f5; /* Fondo claro para el cuadro */
+            border-radius: 15px; /* Bordes redondeados */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para darle profundidad */
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out; /* Efecto al pasar el mouse */
+        }
+
+        .cuadrolicensia:hover {
+            transform: scale(1.05); /* Aumenta el tamaño al hacer hover */
+        }
+
+        .cuadrolicensia img {
+            max-width: 100%;
+            border-radius: 10px; /* Redondeo en las esquinas de la imagen */
+            margin-bottom: 15px;
+        }
+
+        .cuadrolicensia h2 {
+            color: #333;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .cuadrolicensia ol {
+            list-style-type: none; /* Eliminar numeración del <ol> */
+            padding-left: 0;
+            text-align: left; /* Alinear texto a la izquierda */
+        }
+
+        .cuadrolicensia ul {
+            list-style-type: disc; /* Viñetas en forma de discos (bolas) */
+            padding-left: 20px;
+        }
+
+        .cuadrolicensia li {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .cuadrolicensia strong {
+            color: #555;
+        }
+        
+
+
+        
+        
+    </style>
+</head>
+<body>
+
+    <div id="menu-principal">
+        <header>
+            <img src="R.png" alt="Logo" class="logo">
+            <h2>Bienvenido a Mr.Driver</h2>
+            <nav>
+                <ul>
+                    <li><a href="#sobre-nosotros">Sobre Nosotros</a></li>
+                    <li><a href="#escuelas">Escuelas de Manejo</a></li>
+                    <li><a href="#practicas">Prácticas de Manejo</a></li>
+                    <li><a href="#contacto">Contáctanos</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <img src="ranger.png" alt="Usuario" class="user-icon" onclick="toggleDropdown(event)">
+                <div class="dropdown" id="user-dropdown">
+                    <a href="#puntaje">Puntaje</a>
+                    <a href="#informacion">Información</a>
+                    <a href="#configuracion">Configuración</a>
+                    <a href="#ayuda">Ayuda</a>
+                    <a href="usuarios.html">Ver Usuarios Registrados</a>
+                    <a href="Mr.Driver.html">Cerrar Seción</a>
+
+                </div>
+            </div>
+        </header>
+
+        <!-- Carrusel de imágenes -->
+        <div class="carousel">
+            <div class="carousel-images" id="carousel-images">
+                <img src="señales.png" alt="Imagen 1" class="visible">
+                <img src="juego de enseñanza vial.png" alt="Imagen 2">
+                <img src="detalle.png" alt="Imagen 3">
+                <img src="CODIGO-DE-TRANSITO.png" alt="Imagen 4">
+            </div>
+        </div>
+        
+        <section id="juego-cuadro">
+            <div class="cuadro">
+                <img src="logoJU.png" alt="Imagen Juego" class="imagen-juego">
+                <button class="boton-juego" onclick="redirigirAlJuego()">Iniciar Juego</button>
+            </div>
+            <div class="cuadro">
+                <img src="señalesdecuadro.png" alt="Señales de Tránsito" class="imagen-juego">
+                <button class="boton-juego" onclick="redirigirASenales()">Aprende Señales de tránsito</button>
+            </div>
+        </section>
+
+        <section id="leyes.importantes">
+            <img src="apartadoleyes.png" alt="leyes">
+            <div>
+                <h2>Leyes importantes para la conducción y prevención de accidentes</h2>
+                <ol>
+                    <li><strong>Uso obligatorio del cinturón de seguridad:</strong> Todos los ocupantes del vehículo, tanto en los asientos delanteros como traseros, deben utilizar el cinturón de seguridad en todo momento. Esta ley reduce significativamente el riesgo de lesiones graves en caso de accidente.</li>
+                    <li><strong>Límites de velocidad:</strong> Respetar los límites de velocidad establecidos es crucial para evitar accidentes. Exceder la velocidad permitida disminuye el tiempo de reacción ante imprevistos y aumenta el riesgo de perder el control del vehículo.</li>
+                    <li><strong>No conducir bajo los efectos del alcohol o drogas:</strong> Conducir bajo la influencia de sustancias que afecten las capacidades psicomotoras está estrictamente prohibido. Esta ley busca prevenir accidentes graves, ya que el alcohol y las drogas reducen la capacidad de reacción y el juicio del conductor.</li>
+                </ol>
+            </div>
+        </section>
+        
+        <section id="licencias">
+            <div class="cuadrolicensia">
+                <img src="licenciaC1.png" alt="Imagen C1" class="imagen-juego">
+                <h2>Categoria C1</h2>
+                <ol>
+                    <li><strong>Requisitos para la licensia C1:</strong></li>
+                    <ul>
+                        <li>30 Clases Prácticas</li>
+                        <li>30 Clases teóricas</li>
+                        <li>5 Clases Taller</li>
+                    </ul>
+                </ol>
+            </div>
+            <div class="cuadrolicensia">
+                <img src="licensiaB1.png" alt="Imagen B1" class="imagen-juego">
+                <h2>Categoria B1</h2>
+                <ol>
+                    <li><strong>Requisitos para la licensia B1:</strong></li>
+                    <ul>
+                        <li>20 Clases Prácticas</li>
+                        <li>25 Clases teóricas</li>
+                        <li>5 Clases Taller</li>
+                    </ul>
+                </ol>
+            </div>
+            <div class="cuadrolicensia">
+                <img src="licensiaA2.png" alt="Imagen A2" class="imagen-juego">
+                <h2>Categoria A2</h2>
+                <ol>
+                    <li><strong>Requisitos para la licensia A2:</strong></li>
+                    <ul>
+                        <li>15 Clases Prácticas</li>
+                        <li>25 Clases teóricas</li>
+                        <li>3 Clases Taller</li>
+                    </ul>
+                </ol>
+            </div>
+        </section>
+    
+        <section id="requisito-edad">
+            <h2>¿Cuáles son los requisitos de edad para inscribirse en los cursos?</h2>
+            <p>Para inscribirte en nuestros cursos, debes tener al menos 16 años de edad para vehículos de servicio particular y 18 años para vehículos de servicio público. Si tienes alguna pregunta adicional sobre los requisitos de edad, estaremos encantados de ayudarte.</p>
+        </section>
+
+        <section id="escuelas">
+            <h2>Escuelas de Manejo</h2>
+            <p>Trabajamos con las escuelas de manejo más reconocidas, proporcionando formación práctica y teórica de alta calidad. Encuentra la escuela más cercana a ti y comienza tu camino hacia un manejo seguro.</p>
+        </section>
+
+        <section id="info-examen">
+            <h2>¿Qué sucede si no apruebo el examen final?</h2>
+            <p>Ofrecemos sesiones de prácticas supervisadas por profesionales en las que aprenderás las técnicas esenciales para manejar en diferentes condiciones de tráfico y clima.</p>
+        </section>
+
+        <section id="contacto">
+            <h2>Contáctanos</h2>
+            <p>Si tienes alguna pregunta o necesitas más información, no dudes en contactarnos a través de nuestro formulario en línea o por nuestras redes sociales.</p>
+        </section>
+    </div>
+
+    <script>
+        // Función para mostrar u ocultar el menú desplegable
+        function toggleDropdown(event) {
+            const dropdown = document.getElementById("user-dropdown");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            event.stopPropagation(); // Evita que el evento se propague al documento
+        }
+
+        // Cierra el menú si se hace clic en otra parte de la pantalla
+        document.addEventListener("click", function(event) {
+            const dropdown = document.getElementById("user-dropdown");
+            if (dropdown.style.display === "block" && !dropdown.contains(event.target) && !event.target.classList.contains("user-icon")) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        function redirigirAlJuego() {
+            window.location.href = "juego.html"; // Cambia a la URL correspondiente
+        }
+
+        function redirigirASenales() {
+            window.location.href = "señales.html"; // Cambia a la URL correspondiente
+        }
+
+        // Cambia el color del encabezado al desplazarse
+        window.onscroll = function() {
+            const header = document.querySelector("header");
+            if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+                header.classList.add("scrolled");
+            } else {
+                header.classList.remove("scrolled");
+            }
+
+        
+        };
+
+        // Carrusel de imágenes
+        let currentIndex = 0;
+        const images = document.querySelectorAll(".carousel-images img");
+        const totalImages = images.length;
+
+        function showNextImage() {
+            images[currentIndex].classList.remove("visible");
+            currentIndex = (currentIndex + 1) % totalImages;
+            images[currentIndex].classList.add("visible");
+            // Mueve el carrusel con una transición suave
+            const offset = -currentIndex * 100; // Mueve la posición a la izquierda
+            document.getElementById("carousel-images").style.transform = `translateX(${offset}%)`;
+        }
+
+        // Intervalo para cambiar la imagen cada 5 segundos
+        setInterval(showNextImage, 5000);
+
+        // Inicializar la primera imagen
+        images[currentIndex].classList.add("visible");
+
+        console.log("Usuarios Registrados:");
+const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+usuarios.forEach(usuario => {
+    console.log("Nombre: " + usuario.nombre + ", Email: " + usuario.email);
+});
+    </script>
+</body>
+</html>
